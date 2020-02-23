@@ -1,0 +1,15 @@
+# Ignore Log Files and precompiled Python Files
+*.log
+*.pyc
+
+# Ignore all .idea Subfolders everywhere
+**/.idea
+
+# Ignore SSL Zertifikat Dateien
+*.crt
+*.csr
+*.key
+
+# Ignore virtual Environment
+venv/
+
