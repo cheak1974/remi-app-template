@@ -1,7 +1,5 @@
 import core.globals
 import remi.gui
-
-#import core.widgets     # user made Widgets
 import widgets.htmltemplate
 
 
