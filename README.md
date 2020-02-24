@@ -26,7 +26,7 @@ the solution can easily be put into this repo in order to not forget about the s
 
 Just clone the repo with 
 
-`git clone https://cheak@bitbucket.org/cheak/app-template-for-remi.git`
+`git clone https://github.com/cheak1974/remi-app-template.git`
 
 Change to the project folder 
 
