@@ -38,7 +38,7 @@ Install a virtual Environment inside the project folder
 
 If you don't have installed VirtualEnvironment on your Workstation you can do:
 
-`python -m pip install virtualenv`
+`pip install virtualenv`
 
 Change to the Script folder of the virtual Environment 
 
