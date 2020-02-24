@@ -34,7 +34,11 @@ Change to the project folder
 
 Install a virtual Environment inside the project folder 
 
-`python3 -m venv ./venv`
+`python -m venv .\venv`
+
+If you don't have installed VirtualEnvironment on your Workstation you can do:
+
+`python -m pip install virtualenv`
 
 Change to the Script folder of the virtual Environment 
 
@@ -43,12 +47,17 @@ Change to the Script folder of the virtual Environment
 `cd Scripts`
 
 Activate the virtual Environment with `activate` (Linux) or `activate.bat` (Windows).  
+Go back to the project's root folder with:
+
+`cd ..`
+`cd ..`
 
 Then install the needed libraries with 
 
-`pip3 install -r requirements.txt`
+`pip install -r requirements.txt`
 
-Start up the `AppTemplate.py` file in the project root.
+Start up the App with `python AppTemplate.py` file in the project's root.
+The App should startup and open a local browser window with the Apps start page.
 
 
 ## Structure of the App Template
