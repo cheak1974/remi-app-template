@@ -13,6 +13,7 @@ class View_template(Container):
         self.userDefinedAttributes()                                                        # Optional: Users can add Attributes to the container class for their application
 
 
+
 ###EDITOR_BEGIN
     def construct_ui(self):
 
