@@ -39,6 +39,7 @@ class Container(remi.gui.Container):
         self.shownInMenu = 'My Example Menu'
         self.menuTitle = 'Test with HTML added to View'
 
+
     def updateView(self):
         # Here you can update the view if it needs updates
         pass
