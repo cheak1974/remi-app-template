@@ -1,18 +1,14 @@
-import core.globals
 import remi.gui
 import widgets.htmltemplate
 
 
-class View2(remi.gui.Container):
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
-
-        self.AppInst = AppInst          # Holds the Instance of the App. We need it to access uiControl
-        self.shownInMenu = 'My Example Menu'
-        self.menuTitle = 'Show View 2'
+        self.AppInst = AppInst
         self.constructUI()
+        self.userInit(args, kwargs)
 
 
     def constructUI(self):
@@ -66,6 +62,11 @@ class View2(remi.gui.Container):
                                                               style={'margin': 'auto', 'border': '1px solid black', 'margin-top': '10px'},
                                                               listofviews=str(self.AppInst.views.keys()))
         self.append(self.templatetest)
+
+
+    def userInit(self, *args, **kwargs):
+        self.shownInMenu = 'My Example Menu'
+        self.menuTitle = 'Show View 2'
 
 
     def updateView(self):

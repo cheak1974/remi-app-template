@@ -35,7 +35,7 @@ class WebApp(remi.server.App):
         # After reading all available views build up the navbar automatically
         # Every view contains attributes which define in which Menu it should be shown and with which Menu Text
         import views._navbar                                        # Import the navbar file
-        self.navbar = views._navbar.Navbar(AppInst=self)            # Create a navbar Instance
+        self.navbar = views._navbar.Container(AppInst=self)         # Create a navbar Instance
         self.base.append(key='navbar', value=self.navbar)           # Add the navbar to the base widget
 
         # The content Widgets holds the view widget. The view Widget holds the Views.
@@ -70,6 +70,7 @@ class WebApp(remi.server.App):
             self.views['start'].hintbox.set_text('The requested View is not available!')
             self.content.append(key='view', value=self.views['start'])  # If view is not existent, switch to start view. You could also stay in actual view
 
+    # todo: create arg for loading a fresh instance of a view and not the existing one.
 
     def loadViews(self, relative_src_folder, target_dict):
 
@@ -85,7 +86,8 @@ class WebApp(remi.server.App):
         for element in filelist:
             element = element.lower()                                                        # Standarize the filename to lowercase
             element = element.replace('.py', '')                                             # Remove .py ending
-            elementClassName = element[0].upper() + element[1:]                              # Dynamically build up Class name (First letter uppercase)
+            #elementClassName = element[0].upper() + element[1:]                              # Dynamically build up Class name (First letter uppercase)
+            elementClassName ="Container"                                                    # New Remi Editor Function exports Views always with Classname 'Container'
             importedView = importlib.import_module(relative_src_folder + '.' + element)      # Import the view module from views
             viewClass = getattr(importedView, elementClassName)                              # Get the Class by Name from the module (as an reference)
             target_dict[element] = viewClass(AppInst=self)                                   # Instanciate the view via the reference and store it in target dict. Pass App Instance as arg.
@@ -97,7 +99,8 @@ class WebApp(remi.server.App):
         self.layer = remi.gui.Container(width='100%', height='calc(100vh)', style={'position': 'absolute', 'top': '0px', 'left': '0px', 'background-color': 'rgba(255, 0, 0, 0.6)'})
         self.base.append(key='layer', value=self.layer)                         # Set layer on top of the base Container
 
-        dialogClassName = dialogname[0].upper() + dialogname[1:]                # Create a dynamic instance of the dialog. It will be thrown away after showing up
+        #dialogClassName = dialogname[0].upper() + dialogname[1:]               # Create a dynamic instance of the dialog. It will be thrown away after showing up
+        dialogClassName = 'Container'                                           # You can draw dialogs with remi editor. The Class will be named always 'Container'
         viewmodule = importlib.import_module('dialogs.' + dialogname)
         viewclass = getattr(viewmodule, dialogClassName)
         self.layer.append(key=dialogname, value=viewclass(AppInst=self))        # Append the dynamic dialog on top of the layer

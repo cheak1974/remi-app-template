@@ -1,11 +1,11 @@
 import core.globals
 import remi.gui
 
-class Navbar(remi.gui.Container):
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
 
-        super(Navbar, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.AppInst = AppInst                          # Holds the Instance of the App. We need it to access uiControl
 
         # Define the look of the NavBar

@@ -1,18 +1,12 @@
 import remi.gui
 
-
-class Disabledmenu(remi.gui.Container):
-# The name of the class has to be identical with the name of the file (view_template.py), but with capital first letter!
-# The App stores an instance of the view in its views{} dictionary. key = filename of the view without '.py' / value = the view instance
-# Files which have a Underscore at first place in filename will not be loaded (by renaming you can take them out for development easily).
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)       # Initializes the Parent Object remi.gui.Container
-        self.AppInst = AppInst                  # Holds the Instance of the App. We need it to access uiControl
-        self.shownInMenu = 'Examples Gitter Chat'
-        self.menuTitle = 'Disable/Enable Menus'
+        super().__init__(*args, **kwargs)
+        self.AppInst = AppInst
         self.constructUI()
+        self.userInit(args, kwargs)
 
     def constructUI(self):
 
@@ -38,6 +32,11 @@ class Disabledmenu(remi.gui.Container):
         # Append all Widgets to the Container Instance (self)
         self.append(key='menubar', value=self.menubar)
         self.append(key='enable', value=self.enable)
+
+
+    def userInit(self, *args, **kwargs):
+        self.shownInMenu = 'Examples Gitter Chat'
+        self.menuTitle = 'Disable/Enable Menus'
 
 
     def updateView(self):

@@ -1,4 +1,3 @@
-import core.globals
 import remi
 import random
 import threading
@@ -7,18 +6,13 @@ import pygal
 import widgets.pygal
 
 
-class Pygal(remi.gui.Container):
-# The name of the class has to be identical with the name of the file (view_template.py), but with capital first letter!
-# The App stores an instance of the view in its views{} dictionary. key = filename of the view without '.py' / value = the view instance
-# Files which have a Underscore at first place in filename will not be loaded (by renaming you can take them out for development easily).
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)       # Initializes the Parent Object remi.gui.Container
-        self.AppInst = AppInst                  # Holds the Instance of the App. We need it to access uiControl
-        self.shownInMenu = 'My Example Menu'
-        self.menuTitle = 'PyGal Example (dynamic)'
+        super().__init__(*args, **kwargs)
+        self.AppInst = AppInst
         self.constructUI()
+        self.userInit(args, kwargs)
 
 
     def constructUI(self):
@@ -52,6 +46,11 @@ class Pygal(remi.gui.Container):
         t = threading.Thread(target=self.generateRandomData)
         t.daemon = True
         t.start()
+
+
+    def userInit(self, *args, **kwargs):
+        self.shownInMenu = 'My Example Menu'
+        self.menuTitle = 'PyGal Example (dynamic)'
 
 
     def updateView(self):

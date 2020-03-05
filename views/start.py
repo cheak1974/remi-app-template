@@ -1,16 +1,12 @@
-import core.globals
 import remi.gui
 
-
-class Start(remi.gui.Container):
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-
-        super(Start, self).__init__(*args, **kwargs)
-        self.AppInst = AppInst          # Holds the Instance of the App. We need it to access uiControl
-        self.shownInMenu = None         # Start Page should not be visible in any Menu
-        self.menuTitle = ''             # Because it is not in any Menu it doesn't need a menu title neither
+        super().__init__(*args, **kwargs)
+        self.AppInst = AppInst
         self.constructUI()
+        self.userInit(args, kwargs)
 
 
     def constructUI(self):
@@ -42,13 +38,19 @@ class Start(remi.gui.Container):
         self.append(self.vbox)       # Append the container which holds the GUI to the View Instance
 
 
-    def goToEnteredView(self, emittingWidget):
-        # Wrapper Function. If uiControl used when registering the event, the view is fixed but it should be dynamic depending on input
-        enteredView = self.inputview.get_value()
-        self.AppInst.uiControl(emittingWidget, enteredView)
+    def userInit(self, *args, **kwargs):
+        self.shownInMenu = None             # Start Page should not be visible in any Menu
+        self.menuTitle = ''                 # Because it is not in any Menu it doesn't need a menu title neither
 
 
     def updateView(self):
         # Here you can update the view if it needs updates
         pass
+
+
+    def goToEnteredView(self, emittingWidget):
+        # Wrapper Function. If uiControl used when registering the event, the view is fixed but it should be dynamic depending on input
+        enteredView = self.inputview.get_value()
+        self.AppInst.uiControl(emittingWidget, enteredView)
+
 

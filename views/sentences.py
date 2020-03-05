@@ -2,15 +2,13 @@ import core.globals
 import remi
 
 
-class Sentences(remi.gui.Container):
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-
-        super(Sentences, self).__init__(*args, **kwargs)
-        self.AppInst = AppInst          # Holds the Instance of the App. We need it to access uiControl
-        self.shownInMenu = 'Examples Gitter Chat'
-        self.menuTitle = 'Control View Content with API'
+        super().__init__(*args, **kwargs)
+        self.AppInst = AppInst
         self.constructUI()
+        self.userInit(args, kwargs)
 
 
     def constructUI(self):
@@ -28,6 +26,11 @@ class Sentences(remi.gui.Container):
         self.textbox_sentences.set_value('Enter http://127.0.0.1:8080/api/sentences?amount=50 in address row of browser!')
         self.base.append(self.textbox_sentences)
         self.append(self.base)
+
+
+    def userInit(self, *args, **kwargs):
+        self.shownInMenu = 'Examples Gitter Chat'
+        self.menuTitle = 'Control View Content with API'
 
 
     def updateView(self):

@@ -3,15 +3,13 @@ import remi.gui
 
 # Just arrange freely the elements for fixed sceen sizes.
 
-class View3(remi.gui.Container):
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-
-        super(View3, self).__init__(*args, **kwargs)
-        self.AppInst = AppInst          # Holds the Instance of the App. We need it to access uiControl
-        self.shownInMenu = 'My Example Menu'
-        self.menuTitle = 'Show View 3'
+        super().__init__(*args, **kwargs)
+        self.AppInst = AppInst
         self.constructUI()
+        self.userInit(args, kwargs)
 
 
     def constructUI(self):
@@ -24,6 +22,11 @@ class View3(remi.gui.Container):
 
         self.base.add_child('html', '<H1 style="position: relative; left: 10px;">Overview Heating System</H1>')
         self.append(self.base)
+
+
+    def userInit(self, *args, **kwargs):
+        self.shownInMenu = 'My Example Menu'
+        self.menuTitle = 'Show View 3'
 
 
     def updateView(self):
