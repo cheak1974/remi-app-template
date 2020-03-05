@@ -28,6 +28,11 @@ Just clone the repo with
 
 `git clone https://github.com/cheak1974/remi-app-template.git`
 
+If you want a completely empty App template without the example Views and example Models etc.
+we hold a special branch which is called "empty" for you. Just clone the repo with the following command:
+
+`git clone -b empty https://github.com/cheak1974/remi-app-template.git`
+
 Change to the project folder 
 
 `cd app-template-for-remi`
