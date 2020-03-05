@@ -14,24 +14,19 @@ class Container( Container ):
         self.css_border_style = "solid"
         self.css_border_width = "1px"
         self.css_height = "360.0px"
-        self.css_left = "20px"
+        self.css_left = "150px"
         self.css_margin = "0px"
         self.css_position = "relative"
-        self.css_top = "20px"
+        self.css_top = "150px"
         self.css_width = "645.0px"
         self.variable_name = "myContainer"
         myButton = Button()
         myButton.attr_editor_newclass = False
-        myButton.css_background_color = "rgb(110,0,0)"
-        myButton.css_border_radius = "10px"
-        myButton.css_border_style = "solid"
-        myButton.css_border_width = "1px"
-        myButton.css_height = "30px"
-        myButton.css_left = "270.0px"
-        myButton.css_margin = "0px"
+        myButton.css_height = "50px"
+        myButton.css_left = "195.0px"
         myButton.css_position = "absolute"
         myButton.css_top = "270.0px"
-        myButton.css_width = "100px"
+        myButton.css_width = "255px"
         myButton.text = "Click Me"
         myButton.variable_name = "myButton"
         self.append(myButton,'myButton')
@@ -62,7 +57,11 @@ class Container( Container ):
 
     def userInit(self, *args, **kwargs):
         self.shownInMenu = 'My Menu Name'
-        self.menuTitle = 'My View Name'
+        self.menuTitle = 'View created with REMI Editor'
+
+        # Here we add custom styling with CSS templates. This time we use W3.CSS styling.
+        self.children['myButton'].style.update({'font-weight': 'normal', 'display': 'block', 'line-height': self.children['myButton'].css_height})
+        self.children['myButton'].add_class('w3-btn w3-yellow')
 
 
     def updateView(self):
