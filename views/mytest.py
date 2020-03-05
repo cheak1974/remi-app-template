@@ -1,14 +1,13 @@
-
 from remi.gui import *
 
-class Mytest( Container ):                                                                                                          #cheak:Maybe change class name to name of root container
+class Container( Container ):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)                                                                                                #cheak:remove Comments
-        self.AppInst = AppInst                                                                                                           #cheak:remove Comments
-        self.constructUI()                                                                                                               #cheak:instead we just call it
-        self.userInit(args, kwargs)                                                                                                      #more. Register events. Add custom widgets. Add css classes etc.
-                                                                                                                                         # pass kwargs to user init in case user needs it.
+        super().__init__(*args, **kwargs)
+        self.AppInst = AppInst
+        self.constructUI()
+        self.userInit(args, kwargs)
+
 
     def constructUI(self):
         self.attr_editor_newclass = False
@@ -59,12 +58,12 @@ class Mytest( Container ):                                                      
         textinput0.text = ""
         textinput0.variable_name = "textinput0"
         self.append(textinput0,'textinput0')
-        
-        pass
+
 
     def userInit(self, *args, **kwargs):
         self.shownInMenu = 'My Menu Name'
         self.menuTitle = 'My View Name'
+
 
     def updateView(self):
         # Here you can update the view if it needs updates

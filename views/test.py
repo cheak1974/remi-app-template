@@ -1,15 +1,13 @@
 import core.globals
 import remi.gui
 
-class Test(remi.gui.Container):
+class Container(remi.gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
-
-        super(Test, self).__init__(*args, **kwargs)
-        self.AppInst = AppInst          # Holds the Instance of the App. We need it to access uiControl
-        self.shownInMenu = 'My Example Menu'
-        self.menuTitle = 'Test'
+        super().__init__(*args, **kwargs)
+        self.AppInst = AppInst
         self.constructUI()
+        self.userInit(args, kwargs)
 
 
     def constructUI(self):
@@ -36,6 +34,10 @@ class Test(remi.gui.Container):
         self.outer_container.append(self.inner_container)
         self.append(self.outer_container)
 
+
+    def userInit(self, *args, **kwargs):
+        self.shownInMenu = 'My Example Menu'
+        self.menuTitle = 'Test with HTML added to View'
 
     def updateView(self):
         # Here you can update the view if it needs updates

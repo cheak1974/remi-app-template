@@ -1,34 +1,29 @@
-"""
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
-
 import remi.gui as gui
 from remi import start, App
 from threading import Timer
 
 
-class Widgets_overview_app(gui.Container):
+class Container(gui.Container):
 
-    def __init__(self, AppInst=None):
+    def __init__(self, AppInst=None, *args, **kwargs):
         super().__init__()
         self.AppInst = AppInst
+        self.constructUI()
+        self.userInit(args, kwargs)
+
+
+    def userInit(self, *args, **kwargs):
         self.shownInMenu = 'My Example Menu'
         self.menuTitle = 'Official REMI Widget Overview'
-        self.constructUI()
+
 
     def updateView(self):
         self.counter.set_text('Running Time: ' + str(self.count))
         self.progress.set_value(self.count % 100)
+
+    #################################################################################################################################################
+    # We copied the code of the main() method of original Widgets Overview App to the constructUI method and attached all needed methods in the end #
+    #################################################################################################################################################
 
     def constructUI(self):
         # the margin 0px auto centers the main container
