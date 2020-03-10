@@ -26,8 +26,8 @@ class WebApp(remi.server.App):
         self.api = core.webapi.Webapi(attributes={'id': 'api'}, AppInst=self)
 
         # The base Widget is our absolute root of the GUI which is returned (Internal App root is self.root)
-        # margin: 0px auto centers the view, padding: 10 px holds a distance of 10px around the screen for the views
-        self.base = remi.gui.Container(style={'margin': '0px auto' ,'padding': str(core.globals.config['base_padding']) + 'px'})
+        # margin: 0px auto centers the view, padding: 10 px holds a distance of 10px around the screen for the views. box-sizing: border-box forces padding only to be active inside container
+        self.base = remi.gui.Container(style={'margin': '0px auto' ,'padding': str(core.globals.config['base_padding']) + 'px', 'box-sizing': 'border-box'})
 
         # Load all views in Dict (-> key=name of view lowercase, value=instance of the view container)
         self.loadViews('views', self.views)
@@ -40,8 +40,8 @@ class WebApp(remi.server.App):
 
         # The content Widgets holds the view widget. The view Widget holds the Views.
         # When we switch the view, we just remove the actual view widget from content widget and add another one from self.views[name]
-        heightdiff = str(core.globals.config['navbar_height'] + 2 * core.globals.config['base_padding']) + 'px'
-        self.content = remi.gui.Container(style={'min-height': 'calc(100vh - ' + heightdiff + ')'})  # 100vh = Viewport height - navbar_height - 2 * base_padding
+        heightdiff = str(core.globals.config['navbar_height'] + 4 * core.globals.config['base_padding']) + 'px'
+        self.content = remi.gui.Container(style={'min-height': 'calc(100vh - ' + heightdiff + ')'})  # 100vh = Viewport height - navbar_height - 4 * base_padding
 
         # Append the content widget to base widget
         self.base.append(key='content', value=self.content)

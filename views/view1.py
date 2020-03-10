@@ -16,7 +16,7 @@ class Container(remi.gui.Container):
     def constructUI(self):
 
         # Style the View
-        self.style.update({'width': '600px', 'height': '500px', 'position': 'relative', 'margin': 'auto', 'border': '1px solid black', 'padding': '10px', 'margin-top': '50px'})
+        self.style.update({'width': '600px', 'height': '500px', 'position': 'relative', 'margin': 'auto', 'border': '1px solid black', 'padding': '10px', 'margin-top': '20px'})
         # margin: auto centers the element
 
         # Add some stupid html to the view
