@@ -93,7 +93,7 @@ class WebApp(remi.server.App):
             target_dict[element] = viewClass(AppInst=self)                                   # Instanciate the view via the reference and store it in target dict. Pass App Instance as arg.
 
 
-    def showDialog(self, emittingWidget, dialogname):
+    def showDialog(self, emittingWidget, dialogname, **kwargs):
         # Shows a view as a dialog
         # Insert seperation layer with transparency over the actual view (append it on top of self.base container)
         self.layer = remi.gui.Container(width='100%', height='calc(100vh)', style={'position': 'absolute', 'top': '0px', 'left': '0px', 'background-color': 'rgba(255, 0, 0, 0.6)'})
@@ -103,7 +103,7 @@ class WebApp(remi.server.App):
         dialogClassName = 'Container'                                           # You can draw dialogs with remi editor. The Class will be named always 'Container'
         viewmodule = importlib.import_module('dialogs.' + dialogname)
         viewclass = getattr(viewmodule, dialogClassName)
-        self.layer.append(key=dialogname, value=viewclass(AppInst=self))        # Append the dynamic dialog on top of the layer
+        self.layer.append(key=dialogname, value=viewclass(AppInst=self, **kwargs))        # Append the dynamic dialog on top of the layer
 
 
     def hideDialog(self):

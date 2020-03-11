@@ -11,10 +11,14 @@ class Container(Container):
         self.AppInst = AppInst
         self.userInit(args, kwargs)
         self.constructUI()
+        self.style.update({'width': '100%', 'height': '100%', 'position': 'relative',
+                           'overflow': 'auto', 'margin': 'auto', 'border': '1px solid black',
+                           'box-sizing': 'border-box', 'padding': '10px', 'margin-top': '10px'})
+        # margin: auto centers the element, box-sizing: border-box forces padding settings just to be applied inside the box
 
 
     def constructUI(self):
-        schema = Image('/static:images/view3/visu_test.jpg', width='1500px')
+        schema = Image('/static:images/plant_view/visu_test.jpg', width='1500px')
         self.append(schema, 'schema')
 
         rl_temp = Label(f"{self.data['rl_temp']:.1f}°C", style={'position': 'absolute', 'top': '630px', 'left': '500px', 'background-color': 'green', 'font-weight': 'bold'})
@@ -28,11 +32,6 @@ class Container(Container):
     def userInit(self, *args, **kwargs):
         self.shownInMenu = 'My Example Menu'
         self.menuTitle = 'Show View 3'
-        self.style.update({'width': '100%', 'height': '100%', 'position': 'relative',
-                           'overflow': 'auto', 'margin': 'auto', 'border': '1px solid black',
-                           'box-sizing': 'border-box', 'padding': '10px', 'margin-top': '10px'})
-
-        # margin: auto centers the element, box-sizing: border-box forces padding settings just to be applied inside the box
 
         self.data = {}
 
