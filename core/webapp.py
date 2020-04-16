@@ -49,6 +49,8 @@ class WebApp(remi.server.App):
         # Append the already created Start View to the content Container for Session Startup
         self.content.append(key='view', value=self.views['start'])
 
+
+
         # Return the base widget
         return self.base
 

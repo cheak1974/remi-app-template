@@ -4,37 +4,17 @@ import remi
 import pygal
 
 
-class Pygal(remi.gui.Container):
+class Pygal(remi.gui.Widget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def set_content(self, chart):
-        self.data = chart.render()      #_data_uri()
-        i = int(time.time() * 1e6)      # ID
-        self.style['background-image'] = "url('/%s/download?update_index=%d')" % (id(self), i)
-        self.style['background-repeat'] = "no-repeat"
-
-    def download(self, update_index=0):
-        content = self.data
-        headers = {'Content-type': 'image/svg+xml'}
-        return [content, headers]
-
-
-class Pygaldynamic(remi.gui.Container):
-
-    def __init__(self, update_interval=1.0, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        #self.style['background-color'] = 'red'                        # just for testing
-        self.style['background-repeat'] = "no-repeat"                  # CSS background command
+        self.style['background-repeat'] = "no-repeat"           # No tiling of BG
+        self.style['background-size'] = "contain"                 # Fit Image to Widget size
+        self.style['background-position'] = "center center"     # Center Image in Widget
+        #self.style['border'] = '1px solid black'                # Draw a border (for debugging)
 
     def set_content(self, chart):
-    # Method for throwing in new chart data. We don't care about the chart type. We just take it and show it.
-        self.data = str(chart.render())         # PyGal Method for creating SVG Data from the Chart Object (returns bytes)
-        self.data = self.data[2:-1]             # remove the leading b' and the tailing ' in the end. CSS will not work with it correctly. Now it's a clear string
-        self.data = self.data.strip().replace('"', "'")
-        #print(self.data)                      # Debug
-        imagedata = 'url("data:image/svg+xml;' + self.data + '");'
-        #print(imagedata)
-        #self.style['background-image'] = f'url("data:image/svg+xml;{self.data}")'  # Take the XML/SVG Data and set it as background without creating a file
-        self.style['background-image'] = imagedata
+    # Method for throwing in new Pygal chart data. We don't care about the chart type. We just take the PyGal Object it and show it.
+        self.data = chart.render_data_uri()                         # Build in function to render SVG images as URI in Base64
+        self.style['background-image'] = f"url({self.data})"

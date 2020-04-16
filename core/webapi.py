@@ -54,7 +54,21 @@ class Webapi(remi.gui.Widget):
                 </script>
                 </body></html>
                 """
+
         return [html, headers]
+
+
+    def newswitch(self, view):
+        # Method for switching the App view via a html <a> link. You can use relative Links inside your app as well.
+        # "http://127.0.0.1:8080/api/newswitch?view=view2
+        # <a href="/api/switch?view=view1>Click here to get to View1</a>    Use it as relative link.
+
+        # Take the name of the view and call uiControl from AppInst
+        self.AppInst.uiControl(self, view=view)
+        # Build a small html page which reloads the origin address (http://url:port) into the same window.
+        content = '<html><head></head><body><script language="javascript" type="text/javascript">window.open(window.location.origin, "_self");</script></body></html> '
+        headers = {'Content-type': 'text/html'}
+        return [content, headers]
 
 
     def sentences(self, amount):
@@ -65,21 +79,7 @@ class Webapi(remi.gui.Widget):
         self.AppInst.printSentences(self, amount)
 
         # Load AppUrl (http://adresse:port) in active window (_self)
-        # Get complete Url Location and split along /
-        # Build base Url of App with appurl and load it into active window
         headers = {'Content-type': 'text/html'}
-        html = """
-                        <html>
-                        <head></head>
-                        <body>
-                        <script language="javascript" type="text/javascript">
-                            var url = window.location.href;                                         
-                            var arr = url.split("/");
-                            var appurl = arr[0] + "//" + arr[2];
-                            app = window.open(appurl, '_self');
-                        </script>
-                        </body></html>
-                        """
-
+        html = '<html><head></head><body><script language="javascript" type="text/javascript">window.open(window.location.origin, "_self");</script></body></html> '
         return [html, headers]
 

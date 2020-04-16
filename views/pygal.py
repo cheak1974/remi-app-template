@@ -29,7 +29,7 @@ class Container(remi.gui.Container):
         myBarChart.x_labels = [2001, 2002, 2003, 2004, 2005, 2006]
         myBarChart.add('My fancy Data', [3, 5, 1, 8, 10, 2])
 
-        self.pygalcanvasbar = widgets.pygal.Pygal(width='480px', height='350px')
+        self.pygalcanvasbar = widgets.pygal.Pygal(width='480px', height='350px', style={'margin-top': '20px'})
         self.pygalcanvasbar.set_content(myBarChart)
         # Append Graph to Container
         self.append(key='bargraph', value=self.pygalcanvasbar)     # You can access the child widgets with self.children('mylabel') or directly with self.myFirstLabel
@@ -39,7 +39,7 @@ class Container(remi.gui.Container):
         self.xlabels = [1,2,3,4,5]
 
         # Create Pygaldynamic Widget for the LineGraph
-        self.pygalcanvasline = widgets.pygal.Pygaldynamic(width='480px', height='400px')    # Empty Image Widget
+        self.pygalcanvasline = widgets.pygal.Pygal(width='480px', height='350px', style={'margin-top': '20px'})    # Empty Image Widget
         self.append(key='linegraph', value=self.pygalcanvasline)
 
         # data Aquisition in own thread
@@ -69,4 +69,4 @@ class Container(remi.gui.Container):
             self.graphdata.append(random.randrange(1, 100, 1))    # Add random Data
             self.xlabels.append(int(self.xlabels[-1])+1)          # Add new X axis label for this
             self.refreshLineGraph()                               # refresh the Graph
-            time.sleep(0.3)                                       # wait and loop forever
+            time.sleep(0.2)                                       # wait and loop forever
