@@ -1,5 +1,6 @@
 import core.globals
 import remi.gui
+import widgets.trafficlights
 
 class Container(remi.gui.Container):
 
@@ -33,6 +34,10 @@ class Container(remi.gui.Container):
 
         self.outer_container.append(self.inner_container)
         self.append(self.outer_container)
+
+        test_lights = widgets.trafficlights.Trafficlights()
+
+        self.append(test_lights)
 
 
     def userInit(self, *args, **kwargs):
