@@ -14,21 +14,21 @@ class Trafficlights(remi.gui.Widget, remi.gui.EventSource):
         widget_folder = os.path.dirname(widgets.__file__)           # Get the path of the folder where the custom widgets live
 
         # Loading Images from disk and converting it to base64. We do not need to load them from static folder then
-        green_file = open(f'{widget_folder}\\trafficlights\\traffic_green.gif', 'rb')       # Read jpg as binary
+        green_file = open(f'{widget_folder}/trafficlights/traffic_green.gif', 'rb')       # Read jpg as binary
         green_binary = green_file.read()
         green_file.close()
         green_base64 = base64.b64encode(green_binary)                                   # Convert to Base64 (still bytes)
         green_base64_message = green_base64.decode('utf-8')                             # Decode Base64 to utf-8
         self.green = f"url('data:image/gif;base64,{green_base64_message}')"             # Save the Image for use in css background
 
-        red_file = open(f'{widget_folder}\\trafficlights\\traffic_red.gif', 'rb')       # Read jpg as binary
+        red_file = open(f'{widget_folder}/trafficlights/traffic_red.gif', 'rb')       # Read jpg as binary
         red_binary = red_file.read()
         red_file.close()
         red_base64 = base64.b64encode(red_binary)                                       # Convert to Base64 (still bytes)
         red_base64_message = red_base64.decode('utf-8')                                 # Decode Base64 to utf-8
         self.red = f"url('data:image/gif;base64,{red_base64_message}')"                 # Save the Image for use in css background
 
-        yellow_file = open(f'{widget_folder}\\trafficlights\\traffic_yellow.gif', 'rb') # Read jpg as binary
+        yellow_file = open(f'{widget_folder}/trafficlights/traffic_yellow.gif', 'rb') # Read jpg as binary
         yellow_binary = yellow_file.read()
         yellow_file.close()
         yellow_base64 = base64.b64encode(yellow_binary)                                 # Convert to Base64 (still bytes)
