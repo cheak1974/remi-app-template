@@ -4,7 +4,7 @@ import remi
 import jinja2
 
 
-class htmlTemplate(remi.gui.Container):
+class Htmltemplate(remi.gui.Container):
 
     def __init__(self, templatefile, *args, **kwargs):
         super().__init__(*args, **kwargs)

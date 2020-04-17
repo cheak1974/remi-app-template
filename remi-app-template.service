@@ -1,0 +1,40 @@
+# This file will install your REMI App as a service on Linux Systems with systemd
+# Just replace /home/app_path with the correct path to the base folder of your App.
+
+# Normal Command to start the app from the console with its own VENV:
+# source /home/app_path/venv/bin/activate
+# python AppTemplate.py
+#
+# or:
+# /home/app_path/venv/bin/python /home/app_path/AppTemplate.py
+
+# systemd service config:
+# edit this file and copy it to:   /etc/systemd/system/my_app_name.service
+
+# Usage:
+# After copying the file you can do on the console:
+# sudo systemctl status				Show if it is running
+# sudo systemctl start				Start it
+# sudo systemctl stop				Stop it
+# sudo systemctl enable				Enable to start it automatically at system boot
+# sudo systemctl disable			Disable to start it automatically at system boot
+
+[Unit]
+Description="REMI App Template Server"
+After=network.target
+
+# It is a good idea not to run it as root. 
+# You could create a user and/or group for it and edit the lines below
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/home/app_path
+VIRTUAL_ENV=/home/app_path/venv
+Environment=PATH=$VIRTUAL_ENV/bin:$PATH
+ExecStart=/home/app_path/venv/bin/python AppTemplate.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

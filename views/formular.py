@@ -55,7 +55,7 @@ class Container(remi.gui.Container):
 
     def userInit(self, *args, **kwargs):
         self.shownInMenu = 'My Example Menu'
-        self.menuTitle = 'Show View 1'
+        self.menuTitle = 'Formular with custom dialog'
 
 
     def updateView(self):

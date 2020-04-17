@@ -26,6 +26,9 @@ core.globals.config['navbar_height'] = 30
 #core.globals.config['use_ssl_version'] = ssl.PROTOCOL_TLSv1
 
 
+# mongo DB Database Data
+
+
 # Custom Headdata to be added to the Application
 
 core.globals.config['headdata'] = """

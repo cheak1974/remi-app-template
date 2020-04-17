@@ -58,15 +58,15 @@ class Container(remi.gui.Container):
 
 
         # Work with Jinja templates
-        self.templatetest = widgets.htmltemplate.htmlTemplate(templatefile='jinja_example.html', width='80%',
-                                                              style={'margin': 'auto', 'border': '1px solid black', 'margin-top': '10px'},
-                                                              listofviews=str(self.AppInst.views.keys()))
+        self.templatetest = widgets.htmltemplate.Htmltemplate(templatefile='jinja_example.html', width='80%',
+                                                                           style={'margin': 'auto', 'border': '1px solid black', 'margin-top': '10px'},
+                                                                           listofviews=str(self.AppInst.views.keys()))
         self.append(self.templatetest)
 
 
     def userInit(self, *args, **kwargs):
         self.shownInMenu = 'My Example Menu'
-        self.menuTitle = 'Show View 2'
+        self.menuTitle = 'Jinja2 Testing'
 
 
     def updateView(self):

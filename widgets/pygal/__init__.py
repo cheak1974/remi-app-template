@@ -1,0 +1,1 @@
+from .pygal import Pygal

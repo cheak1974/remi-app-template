@@ -46,7 +46,7 @@ class Container(remi.gui.Container):
 
     def userInit(self, *args, **kwargs):
         self.shownInMenu = 'My Example Menu'
-        self.menuTitle = 'Show View 3'
+        self.menuTitle = 'Table Experiments'
 
 
     def updateView(self):

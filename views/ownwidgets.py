@@ -1,4 +1,3 @@
-import core.globals
 import remi.gui
 import widgets.trafficlights
 
@@ -20,11 +19,11 @@ class Container(remi.gui.Container):
                                                                                       'padding': '15px', 'border-radius': '15px'})
 
 
-        test_lights = widgets.trafficlights.Trafficlights(height='140px', width='60px')
+        test_lights = widgets.trafficlights.trafficlights.Trafficlights(height='140px', width='60px')
         test_lights.style.update({'display': 'inline-block', 'position': 'relative', 'vertical-align': 'top'})
         self.outer_container.append(test_lights)
 
-        test_lights2 = widgets.trafficlights.Trafficlights(height='100px', width='40px')
+        test_lights2 = widgets.trafficlights.trafficlights.Trafficlights(height='100px', width='40px')
         test_lights2.style.update({'display': 'inline-block', 'position': 'relative', 'vertical-align': 'top', 'margin-left': '20px'})
         self.outer_container.append(test_lights2)
 

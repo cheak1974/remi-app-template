@@ -3,7 +3,7 @@ import random
 import threading
 import time
 import pygal
-import widgets.pygal
+import widgets.pygal.pygal
 
 
 class Container(remi.gui.Container):
@@ -29,7 +29,7 @@ class Container(remi.gui.Container):
         myBarChart.x_labels = [2001, 2002, 2003, 2004, 2005, 2006]
         myBarChart.add('My fancy Data', [3, 5, 1, 8, 10, 2])
 
-        self.pygalcanvasbar = widgets.pygal.Pygal(width='480px', height='350px', style={'margin-top': '20px'})
+        self.pygalcanvasbar = widgets.pygal.pygal.Pygal(width='480px', height='350px', style={'margin-top': '20px'})
         self.pygalcanvasbar.set_content(myBarChart)
         # Append Graph to Container
         self.append(key='bargraph', value=self.pygalcanvasbar)     # You can access the child widgets with self.children('mylabel') or directly with self.myFirstLabel
@@ -39,7 +39,7 @@ class Container(remi.gui.Container):
         self.xlabels = [1,2,3,4,5]
 
         # Create Pygaldynamic Widget for the LineGraph
-        self.pygalcanvasline = widgets.pygal.Pygal(width='480px', height='350px', style={'margin-top': '20px'})    # Empty Image Widget
+        self.pygalcanvasline = widgets.pygal.pygal.Pygal(width='480px', height='350px', style={'margin-top': '20px'})    # Empty Image Widget
         self.append(key='linegraph', value=self.pygalcanvasline)
 
         # data Aquisition in own thread
