@@ -12,6 +12,10 @@ This is an example App template for the outstanding REMI GUI framework created b
 
 [REMI Gitter Chat Room](https://gitter.im/dddomodossola/remi#)
 
+## See it in action
+
+[REMI-App-Template running on 1 Core 512 MB RAM Ubuntu VServer](http://remi.kueken.de)
+
 
 ## Why making an App Template?
 
