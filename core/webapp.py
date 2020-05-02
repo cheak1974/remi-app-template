@@ -1,4 +1,6 @@
 import importlib
+import datetime
+import time
 import sys
 import os
 import core.globals                                 # Globally accessible Dicts with config defaults -> create Dicts (import this in all views to have access to the data)
@@ -16,7 +18,14 @@ class WebApp(remi.server.App):
 
     def main(self):
 
-        self.views = {}         # All views for the App Instance reside here
+        self.views = {}                             # All views for the App Instance reside here
+        self.connection_established = False         # Connection Flag
+        self.connect_time = None
+        self.disconnect_time = None
+
+        # Debug Infos
+        print(f'Session ID: {self.session}')        # Direct access to session id
+        print(f'{remi.server.clients.items()}')     # Dict with session id as key and WebApp instance as value
 
         # Insert the headdata from config
         self.page.children['head'].add_child('additional_headdata', core.globals.config['headdata'])
@@ -58,6 +67,45 @@ class WebApp(remi.server.App):
     def idle(self):
         # Every View has to have an update Method. It can be left empty if not needed.
         # When App is idle the App keeps running this method again and again (useful for updates)
+
+        # Take care of the connection. It is only alive if the websocket still is active.
+        # Check, if there is a new websocket connection for this App session (= Instance)
+        if self.connection_established == False and len(self.websockets) == 1:
+
+            for session_id, app_inst in remi.server.clients.items():
+                if session_id == self.session:
+                    print(f'My session data:')
+                    print(f'---------------------------------------------------')
+                    print(f'ID: {self.session}')
+
+                    for ws_client in app_inst.websockets:
+                        print(f'Headers:')
+                        print(f'---------------------------------------------------')
+                        print(f'{ws_client.headers} (type: {type(ws_client.headers)})')
+                        print(f'IP     : {ws_client.client_address} (type: {type(ws_client.client_address)})')
+                        print(f'---------------------------------------------------')
+
+            self.connect_time = datetime.datetime.now()
+            self.connection_established = True
+
+        # Check, if the websocket connection is still alive.
+        if len(remi.server.clients[self.session].websockets) == 0 and self.connection_established == True:
+            print(f'Client for session <{self.session}> has disconnected.')
+            self.connection_established = False
+            self.disconnect_time = datetime.datetime.now()
+
+        # If connection is lost wait for a certain amount of time to be reconnected. If it takes too long remove App Instance.
+        if self.connection_established == False and self.disconnect_time != None:
+            now = datetime.datetime.now()
+            timedelta = now - self.disconnect_time  # Subtraction of two datetime objects results in datetime.timedelta object
+            print(f"Time until termination of session <{self.session}> {core.globals.config['reconnect_timeout'] - timedelta.total_seconds()  :.0f} seconds.")
+
+            if timedelta.total_seconds() > core.globals.config['reconnect_timeout']:
+                self._stop_update_flag = True
+                time.sleep(1.0)
+                del remi.server.clients[self.session]
+                return                  # End the idle method
+
         self.content.children['view'].updateView()
 
 

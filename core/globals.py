@@ -16,6 +16,8 @@ config['update_interval'] = 0.1
 config['rel_path_to_static'] = '//static'
 config['base_padding'] = 10
 config['navbar_height'] = 25
+config['reconnect_timeout'] = 30.0
+
 
 # SSL Configuration of REMI
 config['rel_path_to_ssl_certfile'] = ''

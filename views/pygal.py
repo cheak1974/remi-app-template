@@ -52,9 +52,19 @@ class Container(remi.gui.Container):
         self.shownInMenu = 'My Example Menu'
         self.menuTitle = 'PyGal Example (dynamic)'
 
+        self.generation_thread_started = False
+
 
     def updateView(self):
-        pass
+
+        if self.generation_thread_started == False:
+            # data Aquisition in own thread
+            t = threading.Thread(target=self.generateRandomData)
+            t.daemon = True
+            t.start()
+            self.generation_thread_started = True
+
+        self.refreshLineGraph()
 
 
     def refreshLineGraph(self):
@@ -65,8 +75,13 @@ class Container(remi.gui.Container):
 
 
     def generateRandomData(self):
-        while True:
+
+        while self.AppInst.connection_established == True:
+            print('generate data for sessiom...')
+            print(self.AppInst.session)
             self.graphdata.append(random.randrange(1, 100, 1))    # Add random Data
             self.xlabels.append(int(self.xlabels[-1])+1)          # Add new X axis label for this
-            self.refreshLineGraph()                               # refresh the Graph
-            time.sleep(0.2)                                       # wait and loop forever
+            #self.refreshLineGraph()                               # refresh the Graph
+            time.sleep(0.5)                                       # wait and loop forever
+
+        self.generation_thread_started = False
