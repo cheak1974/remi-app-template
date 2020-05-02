@@ -199,12 +199,19 @@ class Container( Container ):                                                   
 
         self.data = {}                      # Dict for Datapoints
 
-        # data Aquisition in own thread
-        t = threading.Thread(target=self.dummy_values)
-        t.daemon = True
-        t.start()
+        self.data_aquisition_thread_started = False
+
+
 
     def updateView(self):
+
+        if self.data_aquisition_thread_started == False:
+            # data Aquisition in own thread
+            t = threading.Thread(target=self.dummy_values)
+            t.daemon = True
+            t.start()
+            return
+
         # Update the UI controls with the new values if UI is idle
 
         # Update Temperatures
@@ -240,6 +247,8 @@ class Container( Container ):                                                   
         # Generate Random Values like data aquisition from Bus System
         # This is absolutely not needed for the UI
 
+        self.data_aquisition_thread_started = True
+
         self.data['km1_run'] = 'AUS'
         self.data['km1_setting'] = 'AUTO'
         self.data['km1_setpoint'] = 6.0
@@ -247,7 +256,9 @@ class Container( Container ):                                                   
         self.data['km2_setting'] = 'AUTO'
         self.data['km2_setpoint'] = 6.0
 
-        while True:
+        # check if the Instance that opened the view is still alive. Stop the thread if its dead.
+        while self.AppInst.connection_established == True:
+
             self.data['vl_temp'] = random.uniform(4.5, 8.5)
             self.data['rl_temp'] = random.uniform(8.0, 12.0)
 
@@ -264,6 +275,6 @@ class Container( Container ):                                                   
             self.data['km1_status'] = self.data['km1_run'] + ' (' + self.data['km1_setting'] + ')'
             self.data['km2_status'] = self.data['km2_run'] + ' (' + self.data['km2_setting'] + ')'
 
-
-
             time.sleep(1.0)
+
+        self.data_aquisition_thread_started = False     # Set the flag back for next visit
