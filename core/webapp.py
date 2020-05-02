@@ -88,23 +88,24 @@ class WebApp(remi.server.App):
             self.connect_time = datetime.datetime.now()
             self.connection_established = True
 
-        # Check, if the websocket connection is still alive.
+        # Check, if the websocket connection is still alive. REMI removes the Websocket from the List if dead.
         if len(remi.server.clients[self.session].websockets) == 0 and self.connection_established == True:
             print(f'Client for session <{self.session}> has disconnected.')
             self.connection_established = False
-            self.disconnect_time = datetime.datetime.now()
+            self.disconnect_time = datetime.datetime.now()      # Store the disconnect time
 
         # If connection is lost wait for a certain amount of time to be reconnected. If it takes too long remove App Instance.
         if self.connection_established == False and self.disconnect_time != None:
-            now = datetime.datetime.now()
-            timedelta = now - self.disconnect_time  # Subtraction of two datetime objects results in datetime.timedelta object
+            now = datetime.datetime.now()               # Store the actual time
+            timedelta = now - self.disconnect_time      # Subtraction of two datetime objects results in datetime.timedelta object
             print(f"Time until termination of session <{self.session}> {core.globals.config['reconnect_timeout'] - timedelta.total_seconds()  :.0f} seconds.")
 
-            if timedelta.total_seconds() > core.globals.config['reconnect_timeout']:
-                self._stop_update_flag = True
-                time.sleep(1.0)
-                del remi.server.clients[self.session]
-                return                  # End the idle method
+            if timedelta.total_seconds() > core.globals.config['reconnect_timeout']:        # If the timeout is reached kill the WebApp Instance manually
+                print(f'The Session <{self.session}> is deleted.')
+                self._stop_update_flag = True                                               # The idle method is not called anymore
+                time.sleep(1.0)                                                             # Wait
+                del remi.server.clients[self.session]                                       # Remove the WebApp Instance from the clients dict
+                return                                                                      # End the idle method
 
         self.content.children['view'].updateView()
 
