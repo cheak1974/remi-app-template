@@ -20,12 +20,12 @@ class WebApp(remi.server.App):
 
         self.views = {}                             # All views for the App Instance reside here
         self.connection_established = False         # Connection Flag
-        self.connect_time = None
-        self.disconnect_time = None
+        self.connect_time = None                    # Timestamp when a connection was established
+        self.disconnect_time = None                 # Timestamp when a connection was closed
 
         # Debug Infos
-        print(f'Session ID: {self.session}')        # Direct access to session id
-        print(f'{remi.server.clients.items()}')     # Dict with session id as key and WebApp instance as value
+        # print(f'Session ID: {self.session}')        # Direct access to session id
+        # print(f'{remi.server.clients.items()}')     # Dict with session id as key and WebApp instance as value
 
         # Insert the headdata from config
         self.page.children['head'].add_child('additional_headdata', core.globals.config['headdata'])
@@ -58,8 +58,6 @@ class WebApp(remi.server.App):
         # Append the already created Start View to the content Container for Session Startup
         self.content.append(key='view', value=self.views['start'])
 
-
-
         # Return the base widget
         return self.base
 
@@ -74,38 +72,46 @@ class WebApp(remi.server.App):
 
             for session_id, app_inst in remi.server.clients.items():
                 if session_id == self.session:
-                    print(f'My session data:')
+                    print(f'New incoming Connection:')
                     print(f'---------------------------------------------------')
-                    print(f'ID: {self.session}')
+                    print(f'Session ID    : {self.session}')
 
                     for ws_client in app_inst.websockets:
-                        print(f'Headers:')
+                        print(f'ClientIP      : {ws_client.client_address} (type: {type(ws_client.client_address)})')
+                        print(f'Client Headers:')
                         print(f'---------------------------------------------------')
                         print(f'{ws_client.headers} (type: {type(ws_client.headers)})')
-                        print(f'IP     : {ws_client.client_address} (type: {type(ws_client.client_address)})')
                         print(f'---------------------------------------------------')
 
+                        core.globals.config['connected_clients'][self.session] = ws_client.client_address
+                        core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] + 1
+                        print('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
+
             self.connect_time = datetime.datetime.now()
-            self.connection_established = True
+            self.connection_established = True                  # Set Flag. This can be used by other threads as end signal.
 
         # Check, if the websocket connection is still alive. REMI removes the Websocket from the List if dead.
         if len(remi.server.clients[self.session].websockets) == 0 and self.connection_established == True:
             print(f'Client for session <{self.session}> has disconnected.')
-            self.connection_established = False
+            self.connection_established = False                 # Set Flag. This can be used by other threads as end signal.
             self.disconnect_time = datetime.datetime.now()      # Store the disconnect time
+            del core.globals.config['connected_clients'][self.session]
+            core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] - 1
 
-        # If connection is lost wait for a certain amount of time to be reconnected. If it takes too long remove App Instance.
+        # If connection is lost wait for a certain amount of time to be reconnected. If it takes too long stop the update idle loop (save CPU time).
         if self.connection_established == False and self.disconnect_time != None:
             now = datetime.datetime.now()               # Store the actual time
             timedelta = now - self.disconnect_time      # Subtraction of two datetime objects results in datetime.timedelta object
-            print(f"Time until termination of session <{self.session}> {core.globals.config['reconnect_timeout'] - timedelta.total_seconds()  :.0f} seconds.")
+            print(f"Time until stop of idle loop of session <{self.session}> {core.globals.config['reconnect_timeout'] - timedelta.total_seconds()  :.0f} seconds.")
 
-            if timedelta.total_seconds() > core.globals.config['reconnect_timeout']:        # If the timeout is reached kill the WebApp Instance manually
-                print(f'The Session <{self.session}> is deleted.')
+            if timedelta.total_seconds() >= core.globals.config['reconnect_timeout']:        # If the timeout is reached stop the idle Loop for the App Instance
+                print(f'Stopped the idle loop for Session <{self.session}>')
                 self._stop_update_flag = True                                               # The idle method is not called anymore
-                time.sleep(1.0)                                                             # Wait
-                del remi.server.clients[self.session]                                       # Remove the WebApp Instance from the clients dict
+                print('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
                 return                                                                      # End the idle method
+
+        # Debug Info - Check idle loop
+        # print(f'Update session <{self.session}>...')
 
         self.content.children['view'].updateView()
 
@@ -121,12 +127,11 @@ class WebApp(remi.server.App):
             self.views['start'].hintbox.set_text('The requested View is not available!')
             self.content.append(key='view', value=self.views['start'])  # If view is not existent, switch to start view. You could also stay in actual view
 
-    # todo: create arg for loading a fresh instance of a view and not the existing one.
 
     def loadViews(self, relative_src_folder, target_dict):
 
         # Load all Views from src folder
-        filelist = os.listdir(sys.path[0] + '//' + relative_src_folder)
+        filelist = os.listdir(sys.path[0] + '/' + relative_src_folder)
         i = len(filelist) - 1
 
         while i >= 0:
@@ -137,10 +142,9 @@ class WebApp(remi.server.App):
         for element in filelist:
             element = element.lower()                                                        # Standarize the filename to lowercase
             element = element.replace('.py', '')                                             # Remove .py ending
-            #elementClassName = element[0].upper() + element[1:]                              # Dynamically build up Class name (First letter uppercase)
             elementClassName ="Container"                                                    # New Remi Editor Function exports Views always with Classname 'Container'
             importedView = importlib.import_module(relative_src_folder + '.' + element)      # Import the view module from views
-            viewClass = getattr(importedView, elementClassName)                              # Get the Class by Name from the module (as an reference)
+            viewClass = getattr(importedView, elementClassName)                              # get the Container class from module and store as reference
             target_dict[element] = viewClass(AppInst=self)                                   # Instanciate the view via the reference and store it in target dict. Pass App Instance as arg.
 
 
@@ -148,18 +152,16 @@ class WebApp(remi.server.App):
         # Shows a view as a dialog
         # Insert seperation layer with transparency over the actual view (append it on top of self.base container)
         self.layer = remi.gui.Container(width='100%', height='calc(100vh)', style={'position': 'absolute', 'top': '0px', 'left': '0px', 'background-color': 'rgba(255, 0, 0, 0.6)'})
-        self.base.append(key='layer', value=self.layer)                         # Set layer on top of the base Container
-
-        #dialogClassName = dialogname[0].upper() + dialogname[1:]               # Create a dynamic instance of the dialog. It will be thrown away after showing up
-        dialogClassName = 'Container'                                           # You can draw dialogs with remi editor. The Class will be named always 'Container'
-        viewmodule = importlib.import_module('dialogs.' + dialogname)
-        viewclass = getattr(viewmodule, dialogClassName)
-        self.layer.append(key=dialogname, value=viewclass(AppInst=self, **kwargs))        # Append the dynamic dialog on top of the layer
+        self.base.append(key='layer', value=self.layer)                                     # Set layer on top of the base Container
+        dialogClassName = 'Container'                                                       # You can draw dialogs with remi editor. The Class will be named always 'Container'
+        viewmodule = importlib.import_module('dialogs.' + dialogname)                       # Import the view module
+        viewclass = getattr(viewmodule, dialogClassName)                                    # get the Container class from module and store as reference
+        self.layer.append(key=dialogname, value=viewclass(AppInst=self, **kwargs))          # Append the dynamic dialog on top of the layer
 
 
     def hideDialog(self):
-        self.base.remove_child(self.layer)      # Remove the layer from the base Container
-        del self.layer                          # Delete the layer and all of its children (=dialog)
+        self.base.remove_child(self.layer)                                                  # Remove the layer from the base Container
+        del self.layer                                                                      # Delete the layer and all of its children (=dialog)
 
 
 

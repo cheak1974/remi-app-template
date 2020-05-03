@@ -57,8 +57,8 @@ class Container(remi.gui.Container):
 
     def updateView(self):
 
-        if self.generation_thread_started == False:
-            # data Aquisition in own thread
+        if self.generation_thread_started == False:                 # Flag is used to start the thread only once
+            # Data Aquisition in own thread
             t = threading.Thread(target=self.generateRandomData)
             t.daemon = True
             t.start()
@@ -76,12 +76,10 @@ class Container(remi.gui.Container):
 
     def generateRandomData(self):
 
-        while self.AppInst.connection_established == True:
-            print('generate data for sessiom...')
-            print(self.AppInst.session)
-            self.graphdata.append(random.randrange(1, 100, 1))    # Add random Data
-            self.xlabels.append(int(self.xlabels[-1])+1)          # Add new X axis label for this
-            #self.refreshLineGraph()                               # refresh the Graph
-            time.sleep(0.5)                                       # wait and loop forever
+        while self.AppInst.connection_established == True:          # Run thread until the calling App Instance is disconnected
+            self.graphdata.append(random.randrange(1, 100, 1))      # Add random Data
+            self.xlabels.append(int(self.xlabels[-1])+1)            # Add new X axis label for this
+            time.sleep(0.5)                                         # wait and loop forever
 
-        self.generation_thread_started = False
+        self.generation_thread_started = False                      # Set Flag back to false when ending thread
+
