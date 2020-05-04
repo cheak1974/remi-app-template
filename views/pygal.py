@@ -60,7 +60,8 @@ class Container(remi.gui.Container):
         if self.generation_thread_started == False and self.AppInst.connection_established == True:    # Flag is used to start the thread only once
             # Data Aquisition in own thread
             t = threading.Thread(target=self.generateRandomData)
-            t.daemon = True
+            t.setDaemon(True)
+            t.setName(str(self.AppInst.session) + '_pygal_thread')
             t.start()
             self.generation_thread_started = True
 
@@ -82,4 +83,7 @@ class Container(remi.gui.Container):
             time.sleep(0.5)                                         # wait and loop forever
 
         self.generation_thread_started = False                      # Set Flag back to false when ending thread
+
+
+        return
 

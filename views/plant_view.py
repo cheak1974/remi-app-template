@@ -208,7 +208,8 @@ class Container( Container ):                                                   
         if self.data_aquisition_thread_started == False and self.AppInst.connection_established == True:
             # data Aquisition in own thread
             t = threading.Thread(target=self.dummy_values)
-            t.daemon = True
+            t.setDaemon(True)
+            t.setName(str(self.AppInst.session) + '_plantview_thread')
             t.start()
             return
 

@@ -1,4 +1,5 @@
 import importlib
+import threading
 import datetime
 import logging
 import time
@@ -21,8 +22,8 @@ class WebApp(remi.server.App):
 
         self.views = {}                             # All views for the App Instance reside here
         self.connection_established = False         # Connection Flag
-        self.connect_time = None                    # Timestamp when a connection was established
-        self.disconnect_time = None                 # Timestamp when a connection was closed#
+        #self.connect_time = None                    # Timestamp when a connection was established
+        #self.disconnect_time = None                 # Timestamp when a connection was closed#
         self.logger = logging.getLogger('remi.app')
 
         # Debug Infos
@@ -78,26 +79,28 @@ class WebApp(remi.server.App):
                     for ws_client in app_inst.websockets:
                         self.logger.info(f'New Session with ID <{self.session}> from host {ws_client.client_address}')
                         self.logger.info(f'Session <{self.session}> host headers: {ws_client.headers}')
-
                         core.globals.config['connected_clients'][self.session] = ws_client.client_address
                         core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] + 1
-
                         self.logger.info('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
 
-            self.connect_time = datetime.datetime.now()
+            #self.connect_time = datetime.datetime.now()
             self.connection_established = True                  # Set Flag. This can be used by other threads as end signal.
 
         # Check, if the websocket connection is still alive. REMI removes the Websocket from the List if dead.
         if len(remi.server.clients[self.session].websockets) == 0 and self.connection_established == True:
             self.logger.info(f'Session <{self.session}> from host {core.globals.config["connected_clients"][self.session]} has disconnected')
             self.connection_established = False                 # Set Flag. This can be used by other threads as end signal.
-            self.disconnect_time = datetime.datetime.now()      # Store the disconnect time
+            #self.disconnect_time = datetime.datetime.now()      # Store the disconnect time
             del core.globals.config['connected_clients'][self.session]
             core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] - 1
             self.logger.info('Still connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
 
+            print(str(threading.enumerate()))
 
-        self.content.children['view'].updateView()
+
+        # Only update the actual view if the connection is still alive
+        if self.connection_established == True:
+            self.content.children['view'].updateView()
 
 
     def uiControl(self, emittingWidget, view):
