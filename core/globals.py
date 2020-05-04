@@ -16,7 +16,6 @@ config['update_interval'] = 0.1
 config['rel_path_to_static'] = '//static'
 config['base_padding'] = 10
 config['navbar_height'] = 25
-config['reconnect_timeout'] = 30.0
 config['number_of_connected_clients'] = 0       # Integer number of connections alive
 config['connected_clients'] = {}                # key: session id  value: host tuple
 

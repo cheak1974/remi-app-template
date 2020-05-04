@@ -1,3 +1,4 @@
+import logging
 import remi.gui
 import core.globals
 

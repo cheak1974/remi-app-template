@@ -1,5 +1,6 @@
 import importlib
 import datetime
+import logging
 import time
 import sys
 import os
@@ -21,7 +22,8 @@ class WebApp(remi.server.App):
         self.views = {}                             # All views for the App Instance reside here
         self.connection_established = False         # Connection Flag
         self.connect_time = None                    # Timestamp when a connection was established
-        self.disconnect_time = None                 # Timestamp when a connection was closed
+        self.disconnect_time = None                 # Timestamp when a connection was closed#
+        self.logger = logging.getLogger('remi.app')
 
         # Debug Infos
         # print(f'Session ID: {self.session}')        # Direct access to session id
@@ -72,46 +74,28 @@ class WebApp(remi.server.App):
 
             for session_id, app_inst in remi.server.clients.items():
                 if session_id == self.session:
-                    print(f'New incoming Connection:')
-                    print(f'---------------------------------------------------')
-                    print(f'Session ID    : {self.session}')
 
                     for ws_client in app_inst.websockets:
-                        print(f'ClientIP      : {ws_client.client_address} (type: {type(ws_client.client_address)})')
-                        print(f'Client Headers:')
-                        print(f'---------------------------------------------------')
-                        print(f'{ws_client.headers} (type: {type(ws_client.headers)})')
-                        print(f'---------------------------------------------------')
+                        self.logger.info(f'New Session with ID <{self.session}> from host {ws_client.client_address}')
+                        self.logger.info(f'Session <{self.session}> host headers: {ws_client.headers}')
 
                         core.globals.config['connected_clients'][self.session] = ws_client.client_address
                         core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] + 1
-                        print('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
+
+                        self.logger.info('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
 
             self.connect_time = datetime.datetime.now()
             self.connection_established = True                  # Set Flag. This can be used by other threads as end signal.
 
         # Check, if the websocket connection is still alive. REMI removes the Websocket from the List if dead.
         if len(remi.server.clients[self.session].websockets) == 0 and self.connection_established == True:
-            print(f'Client for session <{self.session}> has disconnected.')
+            self.logger.info(f'Session <{self.session}> from host {core.globals.config["connected_clients"][self.session]} has disconnected')
             self.connection_established = False                 # Set Flag. This can be used by other threads as end signal.
             self.disconnect_time = datetime.datetime.now()      # Store the disconnect time
             del core.globals.config['connected_clients'][self.session]
             core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] - 1
+            self.logger.info('Still connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
 
-        # If connection is lost wait for a certain amount of time to be reconnected. If it takes too long stop the update idle loop (save CPU time).
-        if self.connection_established == False and self.disconnect_time != None:
-            now = datetime.datetime.now()               # Store the actual time
-            timedelta = now - self.disconnect_time      # Subtraction of two datetime objects results in datetime.timedelta object
-            print(f"Time until stop of idle loop of session <{self.session}> {core.globals.config['reconnect_timeout'] - timedelta.total_seconds()  :.0f} seconds.")
-
-            if timedelta.total_seconds() >= core.globals.config['reconnect_timeout']:        # If the timeout is reached stop the idle Loop for the App Instance
-                print(f'Stopped the idle loop for Session <{self.session}>')
-                self._stop_update_flag = True                                               # The idle method is not called anymore
-                print('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
-                return                                                                      # End the idle method
-
-        # Debug Info - Check idle loop
-        # print(f'Update session <{self.session}>...')
 
         self.content.children['view'].updateView()
 
