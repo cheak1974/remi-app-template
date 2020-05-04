@@ -205,7 +205,7 @@ class Container( Container ):                                                   
 
     def updateView(self):
 
-        if self.data_aquisition_thread_started == False:
+        if self.data_aquisition_thread_started == False and self.AppInst.connection_established == True:
             # data Aquisition in own thread
             t = threading.Thread(target=self.dummy_values)
             t.daemon = True

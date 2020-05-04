@@ -57,7 +57,7 @@ class Container(remi.gui.Container):
 
     def updateView(self):
 
-        if self.generation_thread_started == False:                 # Flag is used to start the thread only once
+        if self.generation_thread_started == False and self.AppInst.connection_established == True:    # Flag is used to start the thread only once
             # Data Aquisition in own thread
             t = threading.Thread(target=self.generateRandomData)
             t.daemon = True
