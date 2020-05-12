@@ -101,7 +101,7 @@ class WebApp(remi.server.App):
         helpers.connections.handle_connections(AppInst=self)                        # Manage incoming and terminating connections
 
         # Check if there is a pending view switch coming from URL routing
-        if self.session in helpers.connections.client_route_url_to_view.keys():     # If there is a key that equals the session, switch view
+        if self.session in helpers.connections.client_route_url_to_view.keys() and self.connection_established == True:
             view = helpers.connections.client_route_url_to_view[self.session]       # Store the view given via URL
             del helpers.connections.client_route_url_to_view[self.session]          # Delete the switching request from Dict
             self.uiControl(self, view)                                              # Finally switch to the view
