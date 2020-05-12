@@ -33,7 +33,7 @@ core.globals.config['navbar_height'] = 30
 
 core.globals.config['headdata'] = """
                         <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <meta name="description" content="SmarterHouses">
+                        <meta name="description" content="REMI App Template">
                         <meta name="author" content="Christian Kueken">
 
                         <link rel="stylesheet" href="/static:css/w3/w3.css">

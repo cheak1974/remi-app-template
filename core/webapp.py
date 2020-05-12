@@ -42,7 +42,7 @@ class WebApp(remi.server.App):
 
             # Catch URLS and route them to views -> when we do this, the normal API widget isn't working anymore.
             temp = func.split('/')
-            if temp[1] != '' and temp[1] != 'favicon.ico':
+            if temp[1] != '' and temp[1] != 'favicon.ico' and '?' not in temp[1]:
 
                 if temp[1] == 'api':                                        # Skip URL parts starting with API for the API widget
                     remi.server.App._process_all(self, func)                # Pass the original url to the process all method
