@@ -1,18 +1,10 @@
-import importlib
-import threading
-import datetime
-import logging
-import time
-import sys
-import os
+import os, sys, logging, importlib
 import core.globals                                 # Globally accessible Dicts with config defaults -> create Dicts (import this in all views to have access to the data)
 import config.config                                # User configuration with user specific config and additional User Data -> change Dicts
 import core.webapi                                  # Functions that can be accessed via the address bar of the browser
-import remi
 import helpers.connections
+import remi
 
-
-client_route_url_to_view = {}                       # Dict to store URL extensions related to session. This is used to switch a view based on url
 
 
 class WebApp(remi.server.App):
@@ -56,7 +48,7 @@ class WebApp(remi.server.App):
                     remi.server.App._process_all(self, func)                # Pass the original url to the process all method
                 else:
                     remi.server.App._process_all(self, '/')                 # Call the original _process_all without all the url additions
-                    client_route_url_to_view[self.session] = str(temp[1])   # Store the first part of url extension for later switching to view
+                    helpers.connections.client_route_url_to_view[self.session] = str(temp[1])   # Store the first part of url extension for later switching to view
                     return
 
         # For all other cases the origin URL stays untouched just call the original handler
@@ -105,44 +97,16 @@ class WebApp(remi.server.App):
 
 
     def idle(self):
-        # Every View has to have an update Method. It can be left empty if not needed.
-        # When App is idle the App keeps running this method again and again (useful for updates)
 
-        # Take care of the connection. It is only alive if the websocket still is active.
-        # Check, if there is a new websocket connection for this App session (= Instance)
-        if self.connection_established == False and len(self.websockets) == 1:
-            for session_id, app_inst in remi.server.clients.items():
-                if session_id == self.session:
-                    for ws_client in app_inst.websockets:
-                        self.logger.info(f'New Session with ID <{self.session}> from host {ws_client.client_address}')
-                        self.logger.info(f'Session <{self.session}> host headers: {ws_client.headers}')
-                        core.globals.config['connected_clients'][self.session] = ws_client.client_address
-                        core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] + 1
-                        self.logger.info('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
-
-            self.connect_time = datetime.datetime.now()
-            self.connection_established = True                  # Set Flag. This can be used by other threads as end signal.
-
-        # Check, if the websocket connection is still alive. REMI removes the Websocket from the List if dead.
-        if len(remi.server.clients[self.session].websockets) == 0 and self.connection_established == True:
-            self.disconnect_time = datetime.datetime.now()  # Store the disconnect time
-            connection_duration =  f'{(self.disconnect_time - self.connect_time).seconds} sec'
-            self.logger.info(f'Session <{self.session}> from host {core.globals.config["connected_clients"][self.session]} has disconnected. Connection duration: {connection_duration}')
-            self.connection_established = False                 # Set Flag. This can be used by other threads as end signal.
-
-            del core.globals.config['connected_clients'][self.session]
-            core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] - 1
-            self.logger.info('Still connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
+        helpers.connections.handle_connections(AppInst=self)                        # Manage incoming and terminating connections
 
         # Check if there is a pending view switch coming from URL routing
-        #if self.session in core.globals.config['client_route_url_to_view'].keys():
-        if self.session in client_route_url_to_view.keys():
-            view = client_route_url_to_view[self.session]
-            del client_route_url_to_view[self.session]
-            self.uiControl(self, view)
+        if self.session in helpers.connections.client_route_url_to_view.keys():     # If there is a key that equals the session, switch view
+            view = helpers.connections.client_route_url_to_view[self.session]       # Store the view given via URL
+            del helpers.connections.client_route_url_to_view[self.session]          # Delete the switching request from Dict
+            self.uiControl(self, view)                                              # Finally switch to the view
 
-        # Only update the actual view if the connection is still alive
-        if self.connection_established == True:
+        if self.connection_established == True:                                     # Call the updateView method of the active view if connection is alive
             self.content.children['view'].updateView()
 
 
@@ -154,12 +118,11 @@ class WebApp(remi.server.App):
                 self.content.remove_child(self.content.children['view'])        # Remove the old view from content widget
 
         if view in self.views.keys():
-            self.views['start'].hintbox.set_text('')
-            self.logger.debug(f'session <{self.session}> switched to view {view}')
+            self.logger.info(f'session <{self.session}> switched to view {view}')
             self.content.append(key='view', value=self.views[view])     # If view is existent, show it (add to content widget)
         else:
-            self.views['start'].hintbox.set_text('The requested View is not available!')
-            self.content.append(key='view', value=self.views['start'])  # If view is not existent, switch to start view. You could also stay in actual view
+            self.logger.info(f'session <{self.session}> tried to switch to view {view} which is not available.')
+            self.content.append(key='view', value=self.views['error_view_not_found'])  # If view is not existent, switch to start view. You could also stay in actual view
 
 
     def loadViews(self, relative_src_folder, target_dict):

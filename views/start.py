@@ -1,6 +1,7 @@
 import logging
 import remi.gui
 import core.globals
+import helpers.connections
 
 class Container(remi.gui.Container):
 
@@ -48,7 +49,7 @@ class Container(remi.gui.Container):
 
 
     def updateView(self):
-        self.hintbox.set_text('Number of Clients actually connected: ' + str(core.globals.config['number_of_connected_clients']))
+        self.hintbox.set_text('Number of Clients actually connected: ' + str(helpers.connections.connected_clients['number']))
 
 
     def goToEnteredView(self, emittingWidget):
