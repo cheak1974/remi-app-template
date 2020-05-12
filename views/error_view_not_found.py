@@ -23,7 +23,7 @@ class Container(remi.gui.Container):
         self.info.style.update({'font-family': 'Arial', 'font-weight': 'bold', 'font-size': '20px', 'text-align': 'center'})
         self.vbox.append(self.info)
 
-        self.info.add_child(key='link', value='<br><br><a href="/start" target="_blank">Go to Start Page</a>')
+        self.info.add_child(key='link', value='<br><br><a href="/start">Go to Start Page</a>')
 
         self.append(self.vbox)       # Append the container which holds the GUI to the View Instance
 
