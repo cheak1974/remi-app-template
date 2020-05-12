@@ -9,22 +9,61 @@ import core.globals                                 # Globally accessible Dicts 
 import config.config                                # User configuration with user specific config and additional User Data -> change Dicts
 import core.webapi                                  # Functions that can be accessed via the address bar of the browser
 import remi
+import helpers.connections
+
+
+client_route_url_to_view = {}                       # Dict to store URL extensions related to session. This is used to switch a view based on url
 
 
 class WebApp(remi.server.App):
 
     def __init__(self, *args, **kwargs):
         static_path = sys.path[0] + core.globals.config['rel_path_to_static']
+
+        self.logger = logging.getLogger('remi.app')
+        self.views = {}                                     # All views for the App Instance reside here
+        self.connection_established = False                 # Connection Flag
+        self.connect_time = None                            # Timestamp when a connection was established
+        self.disconnect_time = None                         # Timestamp when a connection was closed
+
         super().__init__(static_file_path={'static': static_path}, *args, **kwargs)
 
 
-    def main(self):
+    def _process_all(self, func):                   # Overload _process_all method for routing
+        # print(f'{func}')                            # Debug log the Url Part after the origin Url
 
-        self.views = {}                             # All views for the App Instance reside here
-        self.connection_established = False         # Connection Flag
-        #self.connect_time = None                    # Timestamp when a connection was established
-        #self.disconnect_time = None                 # Timestamp when a connection was closed#
-        self.logger = logging.getLogger('remi.app')
+        # Skip Urls with : in it, because these are remi ressources like res:img/test.jpg etc.
+        if not ':' in func:
+            # Catch "naked" foreign identifier added to the url like 127.0.0.1:8080/?fbclid=135454635461321651321654
+            if '?' in func:
+                temp = func.split('?')
+                if temp[0] == '/':
+                    remi.server.App._process_all(self, '/')     # Call the original _process_all without all the url additions
+
+                    for element in temp:                        # Handle variables in url
+                        if 'fbclid' in element:
+                            content = element.split('=')
+                            self.logger.info(f'Facebook Click ID detected (content: {content[1]})')
+
+                        if 'myvar' in element:
+                            self.logger.info('Somebody triggered myvar')
+
+            # Catch URLS and route them to views -> when we do this, the normal API widget isn't working anymore.
+            temp = func.split('/')
+            if temp[1] != '' and temp[1] != 'favicon.ico':
+
+                if temp[1] == 'api':                                        # Skip URL parts starting with API for the API widget
+                    remi.server.App._process_all(self, func)                # Pass the original url to the process all method
+                else:
+                    remi.server.App._process_all(self, '/')                 # Call the original _process_all without all the url additions
+                    client_route_url_to_view[self.session] = str(temp[1])   # Store the first part of url extension for later switching to view
+                    return
+
+        # For all other cases the origin URL stays untouched just call the original handler
+        remi.server.App._process_all(self, func)
+
+
+    def main(self):
 
         # Debug Infos
         # print(f'Session ID: {self.session}')        # Direct access to session id
@@ -72,10 +111,8 @@ class WebApp(remi.server.App):
         # Take care of the connection. It is only alive if the websocket still is active.
         # Check, if there is a new websocket connection for this App session (= Instance)
         if self.connection_established == False and len(self.websockets) == 1:
-
             for session_id, app_inst in remi.server.clients.items():
                 if session_id == self.session:
-
                     for ws_client in app_inst.websockets:
                         self.logger.info(f'New Session with ID <{self.session}> from host {ws_client.client_address}')
                         self.logger.info(f'Session <{self.session}> host headers: {ws_client.headers}')
@@ -83,20 +120,26 @@ class WebApp(remi.server.App):
                         core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] + 1
                         self.logger.info('Connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
 
-            #self.connect_time = datetime.datetime.now()
+            self.connect_time = datetime.datetime.now()
             self.connection_established = True                  # Set Flag. This can be used by other threads as end signal.
 
         # Check, if the websocket connection is still alive. REMI removes the Websocket from the List if dead.
         if len(remi.server.clients[self.session].websockets) == 0 and self.connection_established == True:
-            self.logger.info(f'Session <{self.session}> from host {core.globals.config["connected_clients"][self.session]} has disconnected')
+            self.disconnect_time = datetime.datetime.now()  # Store the disconnect time
+            connection_duration =  f'{(self.disconnect_time - self.connect_time).seconds} sec'
+            self.logger.info(f'Session <{self.session}> from host {core.globals.config["connected_clients"][self.session]} has disconnected. Connection duration: {connection_duration}')
             self.connection_established = False                 # Set Flag. This can be used by other threads as end signal.
-            #self.disconnect_time = datetime.datetime.now()      # Store the disconnect time
+
             del core.globals.config['connected_clients'][self.session]
             core.globals.config['number_of_connected_clients'] = core.globals.config['number_of_connected_clients'] - 1
             self.logger.info('Still connected clients (' + str(core.globals.config['number_of_connected_clients']) + ' in total): ' + str(core.globals.config['connected_clients']))
 
-            print(str(threading.enumerate()))
-
+        # Check if there is a pending view switch coming from URL routing
+        #if self.session in core.globals.config['client_route_url_to_view'].keys():
+        if self.session in client_route_url_to_view.keys():
+            view = client_route_url_to_view[self.session]
+            del client_route_url_to_view[self.session]
+            self.uiControl(self, view)
 
         # Only update the actual view if the connection is still alive
         if self.connection_established == True:
@@ -106,9 +149,13 @@ class WebApp(remi.server.App):
     def uiControl(self, emittingWidget, view):
         # emittingWidgets is needed in Case that the method is bound to an widget event directly
 
-        self.content.remove_child(self.content.children['view'])        # Remove the old view from content widget
+        if hasattr(self, 'base'):
+            if 'view' in self.base.children.keys():
+                self.content.remove_child(self.content.children['view'])        # Remove the old view from content widget
+
         if view in self.views.keys():
             self.views['start'].hintbox.set_text('')
+            self.logger.debug(f'session <{self.session}> switched to view {view}')
             self.content.append(key='view', value=self.views[view])     # If view is existent, show it (add to content widget)
         else:
             self.views['start'].hintbox.set_text('The requested View is not available!')
