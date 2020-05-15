@@ -27,8 +27,7 @@ def handle_connections(AppInst=None):
                                 connected_clients[AppInst.session] = host[1]
                             else:
                                 AppInst.logger.info(f'New Session with ID <{AppInst.session}> from host UNKNOWN')
-                                connected_clients[AppInst.session] = 'UNKNOWN'
-
+                                
                     else:
                         AppInst.logger.info(f'New Session with ID <{AppInst.session}> from host {ws_client.client_address}')    # Host Information for direct connection
                         connected_clients[AppInst.session] = ws_client.client_address
