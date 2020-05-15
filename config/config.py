@@ -19,6 +19,7 @@ core.globals.config['enable_file_cache'] = False
 core.globals.config['update_interval'] = 0.1
 core.globals.config['base_padding'] = 10
 core.globals.config['navbar_height'] = 30
+core.globals.config['is_behind_proxy'] = True
 
 # SSL Configuration (uncomment lines if you want to use SSL/TLS)
 #core.globals.config['rel_path_to_ssl_certfile'] = sys.path[0] + '//sslkeys//kueken_de.crt'         # Create with openssl or via CA

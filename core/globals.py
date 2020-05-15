@@ -16,6 +16,7 @@ config['update_interval'] = 0.1
 config['rel_path_to_static'] = '//static'
 config['base_padding'] = 10
 config['navbar_height'] = 25
+config['is_behind_proxy'] = False
 
 
 # SSL Configuration of REMI
