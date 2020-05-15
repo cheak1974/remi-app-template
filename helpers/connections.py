@@ -24,7 +24,7 @@ def handle_connections(AppInst=None):
                             if header.find('X-Forwarded-For') >= 0:         # Header used by reverse Proxies to forward original host IP
                                 host = header.split(':')
                                 AppInst.logger.info(f'New Session with ID <{AppInst.session}> from host {host[1].strip()}')
-                                connected_clients[AppInst.session] = host[1]
+                                connected_clients[AppInst.session] = host[1].strip()
 
                     else:
                         AppInst.logger.info(f'New Session with ID <{AppInst.session}> from host {ws_client.client_address}')    # Host Information for direct connection
