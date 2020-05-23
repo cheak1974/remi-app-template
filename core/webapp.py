@@ -22,33 +22,42 @@ class WebApp(remi.server.App):
 
 
     def _process_all(self, func):                   # Overload _process_all method for routing
-        # print(f'{func}')                            # Debug log the Url Part after the origin Url
+        print(f'{func}')                            # Debug log the Url Part after the origin Url
 
         # Skip Urls with : in it, because these are remi ressources like res:img/test.jpg etc.
         if not ':' in func:
-            # Catch "naked" foreign identifier added to the url like 127.0.0.1:8080/?fbclid=135454635461321651321654
-            if '?' in func:
-                temp = func.split('?')
-                if temp[0] == '/':
-                    remi.server.App._process_all(self, '/')     # Call the original _process_all without all the url additions
 
-                    for element in temp:                        # Handle variables in url
-                        if 'fbclid' in element:
-                            content = element.split('=')
-                            self.logger.info(f'Facebook Click ID detected (content: {content[1]})')
+            # First catch variables added to the url like 127.0.0.1:8080/?fbclid=135454635461321651321654
+            temp = func.split('?')
+            #print(str(temp))    # for debug
 
-                        if 'myvar' in element:
-                            self.logger.info('Somebody triggered myvar')
+            for element in temp:                    # Handle variables in url
+                if 'fbclid' in element:
+                    content = element.split('=')
+                    self.logger.info(f'Facebook Click ID detected (content: {content[1]})')
 
-            # Catch URLS and route them to views -> when we do this, the normal API widget isn't working anymore.
-            temp = func.split('/')
-            if temp[1] != '' and temp[1] != 'favicon.ico' and '?' not in temp[1]:
+                if 'myvar' in element:
+                    self.logger.info('Somebody triggered myvar')
 
-                if temp[1] == 'api':                                        # Skip URL parts starting with API for the API widget
-                    remi.server.App._process_all(self, func)                # Pass the original url to the process all method
-                else:
-                    remi.server.App._process_all(self, '/')                 # Call the original _process_all without all the url additions
-                    helpers.connections.client_route_url_to_view[self.session] = str(temp[1])   # Store the first part of url extension for later switching to view
+            if temp[0] == '/':
+                remi.server.App._process_all(self, '/')     # Call the original _process_all without all the url variables when no relative url is given
+                return
+
+            else:
+                rel_path = temp[0].split('/')               # drill down the url further along slashes for building view names from relative urls
+                #print(str(rel_path))        # for debug
+
+                # Catch URLS and route them to views
+                if rel_path[1] != '' and rel_path[1] != 'favicon.ico' and rel_path[1] != 'api':     # Exceptions from rule
+                    remi.server.App._process_all(self, '/')                                         # Call the original _process_all without all the url additions
+                    view_name = ''
+                    for url_part in rel_path:                                                       # Build up the App Template view name which is a module
+                        view_name = view_name + url_part
+                        if len(view_name) > 0:
+                            view_name = view_name + '.'
+                    view_name = view_name[:-1]
+                    #print (view_name)          # for debug
+                    helpers.connections.client_route_url_to_view[self.session] = view_name   # Store the view name of url extension for later switching to view (via idle)
                     return
 
         # For all other cases the origin URL stays untouched just call the original handler
