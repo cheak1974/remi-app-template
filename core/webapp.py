@@ -93,7 +93,7 @@ class WebApp(remi.server.App):
         # The content Widgets holds the view widget. The view Widget holds the Views.
         # When we switch the view, we just remove the actual view widget from content widget and add another one from self.views[name]
         heightdiff = str(core.globals.config['navbar_height'] + 4 * core.globals.config['base_padding']) + 'px'
-        self.content = remi.gui.Container(style={'min-height': 'calc(100vh - ' + heightdiff + ')'})  # 100vh = Viewport height - navbar_height - 4 * base_padding
+        self.content = remi.gui.Container(style={'overflow': 'auto', 'min-height': 'calc(100vh - ' + heightdiff + ')'})  # 100vh = Viewport height - navbar_height - 4 * base_padding
 
         # Append the content widget to base widget
         self.base.append(key='content', value=self.content)
