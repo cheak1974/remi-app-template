@@ -1,5 +1,5 @@
 
-##Getting your SSL/TLS Certificate with Let's Encrypt for free
+## Getting your SSL/TLS Certificate with Let's Encrypt for free
 
 [Let's Encrypt](https://letsencrypt.org/)
 
@@ -19,10 +19,10 @@ sudo apt-get install certbot
 ```shell script
 sudo certbot certonly --standalone
 ```
-- If all went well the certificates are stored in /etc/letsencrypt/keys
-- point to the keyfiles with /config/config.py
+- If all went well the certificates are stored in /etc/letsencrypt/live/www.your.domain.com/
+- point to the keyfiles with /remi-app-template-location/config/config.py
 - enable remi app template again
-- if existing configure your reverse proxy to redirect http to https
+- if existing configure your reverse proxy (like haproxy or nginx) to redirect http to https
 
 You can copy the freshly created keys from /etc/letsencrypt/live/your.domain.com/ to REMI App Template sslkeys folder
 
