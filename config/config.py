@@ -19,7 +19,6 @@ core.globals.config['enable_file_cache'] = False
 core.globals.config['update_interval'] = 0.1
 core.globals.config['base_padding'] = 10
 core.globals.config['navbar_height'] = 30
-core.globals.config['is_behind_proxy'] = False          # Try to get the original host IP from Header information because host is always the proxy
 
 # SSL Configuration (uncomment lines if you want to use SSL/TLS)
 #core.globals.config['rel_path_to_ssl_certfile'] = sys.path[0] + '//sslkeys//fullchain.pem'         # Create with openssl or via CA
@@ -34,8 +33,10 @@ core.globals.config['is_behind_proxy'] = False          # Try to get the origina
 
 core.globals.config['headdata'] = """
                         <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <meta name="description" content="REMI App Template">
-                        <meta name="author" content="Christian Kueken">
+                        <meta name="description" content="REMI App Template - Sample App for creating Multiview Apps with REMI.">
+                        <meta name="author" content="Christian Kueken, Germany (http://www.kueken.de)">
+                        <link rel=”canonical” href=”http://remi.kueken.de”>
+                        <title lang="en">REMI App Template</title>
 
                         <link rel="stylesheet" href="/static:css/w3/w3.css">
 
@@ -49,9 +50,7 @@ core.globals.config['headdata'] = """
                         <script src = "/static:js/popper/tooltip.min.js"></script>
 
                         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Lobster|Tangerine">
-
-                        <title>REMI App</title>
-
+                        
                         <style> 
                         html, body {padding: 0; margin: 0; height: 100%;}
                         .w3-roboto {font-family: "Roboto", serif; }
