@@ -157,7 +157,9 @@ class WebApp(remi.server.App):
     def showDialog(self, emittingWidget, dialogname, layercolor='rgba(255, 255, 255, 0.6)', **kwargs):
         # Shows a view as a dialog
         # Insert seperation layer with transparency over the actual view (append it on top of self.base container)
-        self.layer = remi.gui.Container(width='100%', height='120%', style={'position': 'absolute', 'top': '0px', 'left': '0px', 'background-color': layercolor})
+        # It takes 100% of the Viewport and is fixed which means it doesn't scroll. Like this we don't have to disable Widgets in underlying Container.
+        self.layer = remi.gui.Container(width='calc(100VW)', height='calc(100VH)',
+                                        style={'position': 'fixed', 'top': '0px', 'left': '0px', 'background-color': layercolor})
         self.base.append(key='layer', value=self.layer)                                     # Set layer on top of the base Container
         dialogClassName = 'Container'                                                       # You can draw dialogs with remi editor. The Class will be named always 'Container'
         viewmodule = importlib.import_module('dialogs.' + dialogname)                       # Import the view module

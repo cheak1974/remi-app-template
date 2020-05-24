@@ -15,7 +15,8 @@ class Container(gui.Container):
     def constructUI(self, **kwargs):
 
         card = gui.Container()
-        card.add_class('w3-card-4 w3-margin w3-padding w3-white w3-display-topmiddle')
+        card.add_class('w3-card-4 w3-margin w3-padding w3-white w3-display-middle w3-col l4 s12')
+        card.style.update({'position': 'fixed'})        # Position is calculated dynamically but then the card stays fixed :-)
         self.append(card)
 
         title = gui.Container()
