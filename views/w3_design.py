@@ -93,7 +93,7 @@ class Container(gui.Container):
         self.card2.add_child(key='spacer1', value='<br><br>')
 
         footer = gui.Container()
-        footer.add_child(key='footer', value='<p class="w3-small w3-center">Created with REM and W3.CSS</p>')
+        footer.add_child(key='footer', value='<p class="w3-small w3-center">Created with REMI and W3.CSS</p>')
         self.card2.append(footer)
 
         self.card2.add_child(key='spacer2', value='<br><br>')
