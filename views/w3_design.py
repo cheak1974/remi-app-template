@@ -74,8 +74,7 @@ class Container(gui.Container):
         row1.append(box_1_right)
 
         self.card2 = gui.Container()
-        self.card2.add_class('w3-card-4 w3-margin w3-white')
-        self.card2.style.update({'padding': '20px', 'margin': '10px'})
+        self.card2.add_class('w3-card-4 w3-margin w3-padding w3-white w3-display-container')
         box_1_right.append(self.card2)
 
         title = gui.Container()
@@ -93,17 +92,18 @@ class Container(gui.Container):
 
         self.card2.add_child(key='spacer1', value='<br><br>')
 
-        btn2_ok = gui.Button('Dialog', width='30%')
-        btn2_ok.add_class('w3-button w3-green w3-left')
-        self.card2.append(btn2_ok)
-        # Call method for gathering information and showing dialog
-        btn2_ok.onclick.do(self.notify)
+        footer = gui.Container()
+        footer.add_child(key='footer', value='<p class="w3-small w3-center">Created with REM and W3.CSS</p>')
+        self.card2.append(footer)
 
         self.card2.add_child(key='spacer2', value='<br><br>')
 
-        footer = gui.Label('This was made with REMI and W3.css')
-        footer.add_class('w3-small w3-center')
-        self.card2.append(footer)
+        btn2_ok = gui.Button('Dialog', width='30%')
+        btn2_ok.add_class('w3-button w3-green w3-display-bottommiddle')
+        self.card2.append(btn2_ok)
+
+        # Call method for gathering information and showing dialog
+        btn2_ok.onclick.do(self.notify)
 
 
     def userInit(self, *args, **kwargs):
@@ -121,8 +121,9 @@ class Container(gui.Container):
         self.label1.set_text(f'Enter your Name ({dropdown_value} selected)')
 
     def notify(self, emittingWidget):
-        # We need a wrapper because the args cannot change when directly linked
+        # We need a wrapper because the args cannot change when directly linked. The event registration is fixed.
         text = ''
+
         for i in range(1, 10):
             text = text + self.card2.children[f'input_{i}'].get_value() + '\n'
 

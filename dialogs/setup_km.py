@@ -69,7 +69,7 @@ class Container(Container):
 
 
     def userInit(self, *args, **kwargs):
-        self.style.update({'width':'80%', 'margin': '0px auto' ,'padding': '10px', 'margin-top': '50px', 'background-color': 'rgba(255, 255, 255, 0.8)'})
+        self.style.update({'width':'80%', 'margin': '0px auto' , 'border': '1px black solid', 'padding': '10px', 'margin-top': '50px', 'background-color': 'rgba(255, 255, 255)'})
 
         if 'title' in kwargs.keys():
             self.TITLE = kwargs['title']

@@ -1,6 +1,6 @@
-from remi.gui import *
+import remi.gui as gui
 
-class Container(Container):
+class Container(gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
         super().__init__(*args, **kwargs)                                                # Initializes the Parent Object remi.gui.Container
@@ -11,7 +11,7 @@ class Container(Container):
 
     def constructUI(self):
         # This method is reserved for the REMI Editor. You can also use it, but if you load it into the Editor your UI may break.
-        myLabel = Label('This is a Test Label')                                         # Create a Label
+        myLabel = gui.Label('This is a Test Label')                                         # Create a Label
         self.append(myLabel, 'myLabel')                                                 # Add it to the View Container
 
 

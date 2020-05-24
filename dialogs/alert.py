@@ -5,17 +5,17 @@ import remi.gui as gui                  # Import all REMI GUI Elements
 class Container(gui.Container):
 
     def __init__(self, AppInst=None, *args, **kwargs):
+        # Expects title and message as arguments.
         super().__init__(*args, **kwargs)
         self.AppInst = AppInst
-        self.constructUI(**kwargs)
+        self.constructUI(**kwargs)          # Passing the kwargs of the view to constructUI
         self.userInit()
 
 
     def constructUI(self, **kwargs):
 
-        card = gui.Container(width='400px')
-        card.add_class('w3-card-4 w3-margin w3-white w3-display-middle')
-        card.style.update({'padding': '20px', 'margin': '10px'})
+        card = gui.Container()
+        card.add_class('w3-card-4 w3-margin w3-padding w3-white w3-display-topmiddle')
         self.append(card)
 
         title = gui.Container()
@@ -29,13 +29,15 @@ class Container(gui.Container):
         ok = gui.Button('OK', style={'width': '30%'})
         ok.add_class('w3-button w3-green w3-left')
         ok.onclick.do(self.handle)
+
         cancel = gui.Button('Cancel', style={'width': '30%'})
         cancel.add_class('w3-button w3-yellow w3-right')
         cancel.onclick.do(self.handle)
-        card.add_child(key='spacer1', value='<br><br>')
+
+        card.add_child(key='spacer', value='<br><br>')
         card.append(ok)
         card.append(cancel)
-        card.add_child(key='spacer2', value='<br><br>')
+        #card.add_child(key='spacer2', value='<br><br>')
 
     def userInit(self, *args, **kwargs):
         pass

@@ -49,7 +49,7 @@ class Container(remi.gui.Container):
 
         self.showdialog = remi.gui.Button('Show Dialog', width='200px', style={'position': 'absolute', 'top': '250px', 'left': '300px', 'font-style': 'normal', 'font-weight': 'normal'})
         self.showdialog.add_class('w3-button w3-display-bottom-right')
-        self.showdialog.onclick.do(self.AppInst.showDialog, 'sample')
+        self.showdialog.onclick.do(self.AppInst.showDialog, dialogname='sample', layercolor='rgb(77, 166, 255, 0.6)')
         self.append(key='showdialog', value=self.showdialog)
 
 
