@@ -13,7 +13,7 @@ config['start_browser'] = False
 config['debug'] = False
 config['enable_file_cache'] = False
 config['update_interval'] = 0.1
-config['rel_path_to_static'] = '//static'
+config['rel_path_to_static'] = '/static'
 config['base_padding'] = 10
 config['navbar_height'] = 25
 

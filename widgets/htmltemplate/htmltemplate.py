@@ -10,9 +10,10 @@ class Htmltemplate(remi.gui.Container):
         super().__init__(*args, **kwargs)
         templatepath = sys.path[0] + core.globals.config['rel_path_to_static'] + '//templates//'
 
+
         # Jinja2 Magic
         self.file_loader = jinja2.FileSystemLoader(templatepath)     # Define Place where templates live
-        self.env = jinja2.Environment(loader=self.file_loader)       # Make Jinja2 Environment
+        self.env = jinja2.Environment(loader=self.file_loader)       # Make Jinja2 Environment with markup extension
         self.template = self.env.get_template(templatefile)          # Load template with filename from arg
         self.add_child('jinja', self.template.render(data=kwargs))   # render the template file
 

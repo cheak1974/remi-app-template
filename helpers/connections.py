@@ -7,6 +7,7 @@ connected_clients['number'] = 0                     # Special Dict Field for amo
 client_route_url_to_view = {}                       # Dict to store URL extensions related to session. This is used to switch a view based on url
 
 
+
 def handle_connections(AppInst=None):
     # Take care of the connection. It is only alive if the websocket still is active.
     # Check, if there is a new websocket connection for this App session (= Instance)

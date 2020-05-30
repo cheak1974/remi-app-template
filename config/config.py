@@ -45,9 +45,8 @@ core.globals.config['headdata'] = """
 
                         <link rel="stylesheet" href="/static:css/bootstrap4/css/bootstrap.min.css" >
                         <script src="/static:css/bootstrap4/js/bootstrap.min.js"></script>
+                        
                         <script src = "/static:js/jquery/jquery-3.4.1.slim.js"></script>
-                        <script src = "/static:js/popper/popper.min.js"></script>
-                        <script src = "/static:js/popper/tooltip.min.js"></script>
 
                         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Lobster|Tangerine">
                         
