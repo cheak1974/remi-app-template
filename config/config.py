@@ -49,7 +49,7 @@ core.globals.config['headdata'] = """
                         <script src = "/static:js/jquery/jquery-3.4.1.slim.js"></script>
 
                         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Lobster|Tangerine">
-                        
+                                                                        
                         <style> 
                         html, body {padding: 0; margin: 0; height: 100%;}
                         .w3-roboto {font-family: "Roboto", serif; }
