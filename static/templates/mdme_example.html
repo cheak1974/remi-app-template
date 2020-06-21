@@ -1,0 +1,78 @@
+
+<script>window.mdme = { renderOnLoad: false }</script>
+<script src="https://cdn.jsdelivr.net/npm/mdme@0.3.0"></script>
+
+<script>
+window.onload = function () {
+  var btn_render_page = document.getElementById('btn_renderpage')
+  btn_renderpage.onclick = function () {
+    mdme.setOption('style', 'none')
+    mdme.renderPage()
+  }
+
+  var btn_render_html = document.getElementById('btn_renderhtml')
+  btn_render_html.onclick = function () {
+    var input_md = document.getElementById('demo').innerHTML
+    var output_html = mdme.render(input_md)
+    document.getElementById('demo').innerHTML = output_html
+  }
+}
+</script>
+
+<div id="demo">
+
+# This is a heading
+
+-----------------------------------
+
+[Markdown Cheat Sheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+
+[TexMe GitHub](https://github.com/susam/texme)
+
+[mdme Github](https://github.com/susam/mdme)
+
+# Euler's Identity
+
+In mathematics, **Euler's identity** is the equality
+$$ e^{i \pi} + 1 = 0. $$
+
+
+### A smaller heading
+
+Lirum Larum **Ipsum** dolorem. Lirum Larum **Ipsum** dolorem.Lirum Larum **Ipsum** dolorem.
+
+
+Lirum Larum **Ipsum** dolorem.Lirum Larum **Ipsum** dolorem.Lirum Larum **Ipsum** dolorem.
+Lirum Larum **Ipsum** dolorem.Lirum Larum **Ipsum** dolorem.Lirum Larum **Ipsum** dolorem.
+
+|Tab1    |Tab2      |Tab3     |
+|--------|----------|---------|
+|Data    |Data      |Data     |
+
+```Python
+def test1():
+   print('Oh wow, this is code')
+```
+
+Let's look for citation:
+
+> This is citation block
+
+
+</div>
+
+<div>
+
+# This is the second div Tag
+
+This div Tag should not be rendered when clicking the second button.
+If you want the page to be rendered on load automatically set the
+renderOnLoad Option to True or erase it.
+
+</div>
+
+<div><button id="btn_renderpage">texMe Render entire Page</button></div>
+
+<div><button id="btn_renderhtml">texMe render to HTML only first div</button></div>
+
+

@@ -4,6 +4,7 @@ import widgets.htmltemplate
 # https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 # https://github.com/susam/texme/blob/master/README.md
 
+# https://github.com/executablebooks/markdown-it-py
 
 class Container(remi.gui.Container):
 
